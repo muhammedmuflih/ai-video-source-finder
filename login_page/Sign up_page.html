@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sign up</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg1:#fdf3ee; --bg2:#e7b4cf;
+  --card:#1c1c1e; --panel:#0e0e0f; --text:#f3f3f3; --muted:#8a8a8e; --line:#2e2e31;
+  --field:#131314; --accent:#f6ab4b; --accent-ink:#1b1206;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg1:#2a1f2c; --bg2:#4a2a49; }
+}
+:root[data-theme="dark"]{ --bg1:#2a1f2c; --bg2:#4a2a49; }
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 100%);
+  font-family:Inter,system-ui,sans-serif; color:var(--text);
+  display:flex; align-items:center; justify-content:center; padding:24px; overflow-x:hidden;
+}
+.stage{perspective:1400px; width:100%; max-width:940px}
+.card{
+  position:relative; display:grid; grid-template-columns:1fr 1fr; min-height:540px;
+  background:var(--card); border-radius:26px; padding:14px;
+  box-shadow:0 40px 80px -30px rgba(60,20,60,.55);
+  transform-style:preserve-3d; transition:transform .25s ease-out; will-change:transform;
+}
+.left{position:relative; padding:20px 44px 24px 34px; display:flex; flex-direction:column}
+.top{display:flex; justify-content:space-between; align-items:center; font-size:11px}
+.logo{width:30px;height:30px;border-radius:50%;background:#2b2b2e;display:grid;place-items:center;font:600 11px "Chakra Petch",sans-serif}
+.top span{color:var(--muted)} .top b{color:var(--text);font-weight:600;margin-left:4px;cursor:pointer}
+.form{margin:auto 0; padding:10px 0}
+h1{font:500 38px "Chakra Petch",sans-serif; margin-bottom:26px; letter-spacing:.3px}
+.lbl{font-size:12px; font-weight:600; margin-bottom:12px}
+.row{display:flex; gap:10px}
+.sbtn{
+  flex:1; display:flex; align-items:center; justify-content:center; gap:8px;
+  background:transparent; color:var(--text); border:1px solid var(--line); border-radius:9px;
+  height:38px; font:600 12px Inter,sans-serif; cursor:pointer; transition:background .2s;
+}
+.sbtn:hover{background:#262628}
+.sbtn svg{width:15px;height:15px}
+hr{border:0;border-top:1px solid var(--line); margin:22px 0}
+.field{
+  display:flex; align-items:center; gap:10px; background:var(--field); border-radius:9px;
+  padding:0 12px; height:40px; margin:10px 0 14px; border:1px solid transparent; transition:border-color .2s;
+}
+.field:focus-within{border-color:var(--accent)}
+.field svg{width:15px;height:15px;color:var(--muted);flex:none}
+.field input{flex:1;background:none;border:0;outline:0;color:var(--text);font:400 12px Inter,sans-serif}
+.field input::placeholder{color:#55555a}
+.go{
+  width:100%; height:38px; border:0; border-radius:8px; background:var(--accent); color:var(--accent-ink);
+  font:600 12px Inter,sans-serif; cursor:pointer; transition:filter .2s, transform .1s;
+}
+.go:hover{filter:brightness(1.08)} .go:active{transform:scale(.985)}
+.note{font-size:11px; color:#6d6d72; line-height:1.6; margin-top:22px; max-width:230px}
+.right{position:relative; background:var(--panel); border-radius:18px}
+.robot{
+  position:absolute; right:-34px; bottom:-6px; width:112%; max-width:470px; height:auto;
+  transform:translateZ(60px); overflow:visible; filter:drop-shadow(0 18px 20px rgba(0,0,0,.45));
+}
+.robot .mv{transition:transform .22s ease-out}
+@media (max-width:760px){
+  .card{grid-template-columns:1fr}
+  .right{min-height:300px; order:-1}
+  .robot{width:80%; right:0; left:10%}
+  .left{padding:20px 22px}
+}
+@media (prefers-reduced-motion:reduce){.card,.robot .mv{transition:none}}
+.err{min-height:16px;font-size:11px;color:#ff7b7b;margin:-4px 0 8px}
+.err.ok{color:#7bdc95}
+.eye{background:none;border:0;color:var(--muted);font:500 11px Inter,sans-serif;cursor:pointer}
+.top b{cursor:pointer}.top b:hover{color:var(--accent)}
+.form[hidden]{display:none}
+.wmsg{font-size:13px;color:var(--muted);margin-bottom:22px}.wmsg b{color:var(--text)}
+.field.bad{border-color:#ff7b7b}
+.forgot{font-size:11px;color:var(--muted);cursor:pointer;display:inline-block;margin:-4px 0 10px}
+
+body.in{background:#0a0a18}
+body.in #pageUp{display:none}
+#pageIn{display:none;position:relative;width:100%;min-height:100vh;align-items:center;justify-content:center;padding:24px}
+body.in #pageIn{display:flex}
+.blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:.55;pointer-events:none;animation:drift 14s ease-in-out infinite alternate}
+.b1{width:420px;height:420px;background:#6d4aff;top:-120px;left:-100px}
+.b2{width:380px;height:380px;background:#00c2d4;bottom:-140px;right:-80px;animation-delay:-5s}
+.b3{width:300px;height:300px;background:#ff4fa3;top:40%;left:55%;opacity:.35;animation-delay:-9s}
+@keyframes drift{to{transform:translate(60px,40px) scale(1.15)}}
+.glass{
+  position:relative;z-index:1;width:100%;max-width:400px;padding:36px 32px 28px;border-radius:24px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  box-shadow:0 30px 70px -20px rgba(0,0,0,.6);color:#fff;
+}
+.glass .mark{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#6d4aff,#00c2d4);display:grid;place-items:center;font:600 14px "Chakra Petch",sans-serif;margin-bottom:22px}
+.glass h2{font:600 28px "Chakra Petch",sans-serif;margin-bottom:6px}
+.glass .sub{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:26px}
+.fl{position:relative;margin-bottom:20px}
+.fl input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:20px 54px 8px 14px;color:#fff;font:400 14px Inter,sans-serif;outline:0;transition:border-color .2s,background .2s}
+.fl input:focus{border-color:#8f78ff;background:rgba(255,255,255,.1)}
+.fl label{position:absolute;left:14px;top:15px;font-size:14px;color:rgba(255,255,255,.55);pointer-events:none;transition:all .18s}
+.fl input:focus+label,.fl input:not(:placeholder-shown)+label{top:6px;font-size:10.5px;color:#a99bff}
+.fl.bad input{border-color:#ff7b7b}
+.fl .eye{position:absolute;right:12px;top:14px;color:rgba(255,255,255,.6)}
+.opts{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(255,255,255,.65);margin:-4px 0 18px}
+.opts label{display:flex;align-items:center;gap:7px;cursor:pointer}
+.opts input{accent-color:#8f78ff}
+.opts a{color:#a99bff;cursor:pointer}
+.gbtn{width:100%;height:46px;border:0;border-radius:12px;background:linear-gradient(90deg,#6d4aff,#00b8d9);color:#fff;font:600 14px Inter,sans-serif;cursor:pointer;box-shadow:0 10px 24px -8px rgba(109,74,255,.7);transition:transform .12s,filter .2s}
+.gbtn:hover{filter:brightness(1.1)}.gbtn:active{transform:scale(.985)}
+.or{display:flex;align-items:center;gap:12px;font-size:11px;color:rgba(255,255,255,.45);margin:20px 0}
+.or:before,.or:after{content:"";flex:1;border-top:1px solid rgba(255,255,255,.14)}
+.gg{width:100%;height:44px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;font:500 13px Inter,sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:background .2s}
+.gg:hover{background:rgba(255,255,255,.14)}.gg svg{width:16px;height:16px}
+.foot{text-align:center;font-size:12px;color:rgba(255,255,255,.6);margin-top:22px}
+.foot a{color:#fff;font-weight:600;cursor:pointer;margin-left:4px}
+#pageIn .err{margin:-8px 0 10px;color:#ff9a9a}#pageIn .err.ok{color:#7ff0b0}
+#pageIn .wl{text-align:center;padding:10px 0}
+#pageIn .wl p{color:rgba(255,255,255,.65);font-size:13px;margin-bottom:22px}
+@media (prefers-reduced-motion:reduce){.blob{animation:none}}
+
+/* ---- villain sign-in theme ---- */
+body.in{background:#07070c}
+.b1{background:#ff1f3d}.b2{background:#7a0018}.b3{background:#ff6a00;opacity:.22}
+#pageIn{gap:48px}
+.flick{position:fixed;inset:0;background:#000;pointer-events:none;z-index:0;opacity:0;animation:lights 9s infinite}
+@keyframes lights{
+  0%,38%{opacity:0}39%{opacity:.92}40%{opacity:.05}41%{opacity:.95}43%{opacity:.2}
+  44%,66%{opacity:.95}67%{opacity:.1}68%{opacity:.9}69%{opacity:0}70%,100%{opacity:0}}
+@keyframes eyeglow{
+  0%,38%{filter:drop-shadow(0 0 4px #ff2b2b)}
+  44%,66%{filter:drop-shadow(0 0 14px #ff1a1a) drop-shadow(0 0 32px #ff0000)}
+  70%,100%{filter:drop-shadow(0 0 4px #ff2b2b)}}
+@keyframes neon{
+  0%,38%{color:#ffd9dc;text-shadow:0 0 6px rgba(255,43,43,.5),0 0 16px rgba(255,43,43,.3)}
+  40%{color:#6b3a3e;text-shadow:none}41%{color:#fff;text-shadow:0 0 10px #ff2b2b}43%{color:#6b3a3e;text-shadow:none}
+  44%,66%{color:#fff;text-shadow:0 0 8px #ff2b2b,0 0 22px #ff2b2b,0 0 48px #ff0000}
+  67%{color:#6b3a3e;text-shadow:none}69%,100%{color:#ffd9dc;text-shadow:0 0 6px rgba(255,43,43,.5),0 0 16px rgba(255,43,43,.3)}}
+@keyframes breath{to{transform:translateY(-5px)}}
+.neon{animation:neon 9s infinite}
+.vrobot{width:min(380px,38vw);height:auto;position:relative;z-index:1;overflow:visible;filter:drop-shadow(0 20px 30px rgba(255,0,0,.18))}
+.breath{animation:breath 3s ease-in-out infinite alternate}
+.dim{animation:lights 9s infinite;opacity:0}
+.eyesfx{animation:eyeglow 9s infinite}
+.vrobot .mv{transition:transform .2s ease-out}
+.glass{border-color:rgba(255,80,90,.22);background:rgba(20,8,12,.55)}
+.glass .mark{background:linear-gradient(135deg,#ff2b2b,#7a0018)}
+.fl input:focus{border-color:#ff4d5e}
+.fl input:focus+label,.fl input:not(:placeholder-shown)+label{color:#ff8a94}
+.opts input{accent-color:#ff2b2b}.opts a,.foot a{color:#ff8a94}
+.gbtn{background:linear-gradient(90deg,#ff2b2b,#a3001b);box-shadow:0 10px 24px -8px rgba(255,43,43,.7)}
+@media (max-width:860px){#pageIn{flex-direction:column;gap:6px;padding-top:12px}.vrobot{width:210px}}
+@media (prefers-reduced-motion:reduce){.flick,.dim,.eyesfx,.neon,.breath{animation:none}}
+</style>
+</head>
+<body>
+<div class="stage" id="pageUp">
+  <div class="card" id="card">
+    <div class="left">
+      <div class="top">
+        <div class="logo">FII</div>
+        <div><span id="swText">Already a member?</span><b id="swLink" role="link" tabindex="0">Sign in</b></div>
+      </div>
+
+      <div class="form" id="authView">
+        <h1 id="title">Sign up</h1>
+        <div class="lbl" id="gLbl">Sign up with Google</div>
+        <button class="sbtn" type="button" id="gBtn">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.700 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.500-1 7.300-2.700l-3.500-2.700c-1 .7-2.200 1-3.800 1-2.900 0-5.400-2-6.300-4.600H2.100v2.800A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.700 14c-.2-.7-.4-1.300-.4-2s.1-1.400.4-2V7.200H2.100a11 11 0 0 0 0 9.600L5.700 14z"/><path fill="#EA4335" d="M12 5.400c1.600 0 3.100.6 4.200 1.700l3.100-3.100A11 11 0 0 0 2.100 7.200L5.700 10c.9-2.600 3.400-4.600 6.300-4.600z"/></svg>
+          Google
+        </button>
+        <hr>
+        <form id="form" novalidate>
+          <div class="lbl">Or continue with email address</div>
+          <div class="field" id="fEmail">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            <input id="email" type="email" placeholder="Your email" autocomplete="email">
+          </div>
+          <div class="field" id="fPass">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            <input id="pass" type="password" placeholder="Password" autocomplete="current-password">
+            <button type="button" class="eye" id="eye">Show</button>
+          </div>
+          <div class="err" id="err" role="alert"></div>
+          <button class="go" type="submit" id="goBtn">Continue</button>
+        </form>
+        <p class="note" id="note">This site is protected by reCAPTCHA and the Google Privacy Policy.</p>
+      </div>
+
+      <div class="form welcome" id="welcomeView" hidden>
+        <h1>Welcome</h1>
+        <p class="wmsg">You are signed in as <b id="who"></b></p>
+        <button class="go" type="button" id="logout">Log out</button>
+      </div>
+    </div>
+
+    <div class="right">
+      <!-- Robot: swap this whole <svg> for <img src="your-robot.png" class="robot"> if you have the 3D render -->
+      <svg class="robot" id="robot" viewBox="0 0 320 440" xmlns="http://www.w3.org/2000/svg">
+        <!-- legs -->
+        <g fill="#3fcf6a" stroke="#1f7a3a" stroke-width="3">
+          <rect x="105" y="300" width="34" height="80" rx="14"/><rect x="170" y="300" width="34" height="80" rx="14"/>
+          <path d="M92 388q0-24 28-24t28 24v22H92z"/><path d="M160 388q0-24 28-24t28 24v22h-56z"/>
+        </g>
+        <g fill="#f6a944" stroke="#a0601c" stroke-width="3">
+          <rect x="84" y="404" width="72" height="18" rx="9"/><rect x="152" y="404" width="72" height="18" rx="9"/>
+        </g>
+        <!-- right arm (screen right, hanging) -->
+        <g id="armR" class="mv" style="transform-origin:218px 215px">
+          <rect x="212" y="205" width="30" height="62" rx="15" fill="#3fcf6a" stroke="#1f7a3a" stroke-width="3"/>
+          <rect x="214" y="255" width="30" height="58" rx="15" fill="#d9ec7a" stroke="#6f8a1f" stroke-width="3"/>
+          <circle cx="229" cy="318" r="14" fill="#3fcf6a" stroke="#1f7a3a" stroke-width="3"/>
+        </g>
+        <!-- body -->
+        <rect x="88" y="190" width="132" height="130" rx="34" fill="#f6a944" stroke="#a0601c" stroke-width="3"/>
+        <rect x="100" y="250" width="108" height="56" rx="22" fill="#fbd37f" opacity=".7"/>
+        <circle cx="128" cy="232" r="16" fill="#1b2a22" stroke="#7bdc95" stroke-width="3"/>
+        <circle cx="180" cy="232" r="16" fill="#1b2a22" stroke="#7bdc95" stroke-width="3"/>
+        <circle cx="128" cy="232" r="5" fill="#7bdc95"/><circle cx="180" cy="232" r="5" fill="#7bdc95"/>
+        <rect x="140" y="262" width="28" height="12" rx="6" fill="#3fcf6a" stroke="#1f7a3a" stroke-width="2"/>
+        <rect x="140" y="282" width="28" height="12" rx="6" fill="#3fcf6a" stroke="#1f7a3a" stroke-width="2"/>
+        <!-- left arm (pointing) -->
+        <g id="armL" class="mv" style="transform-origin:96px 215px">
+          <rect x="82" y="205" width="30" height="62" rx="15" fill="#3fcf6a" stroke="#1f7a3a" stroke-width="3"/>
+          <rect x="80" y="255" width="30" height="58" rx="15" fill="#d9ec7a" stroke="#6f8a1f" stroke-width="3"/>
+          <circle cx="95" cy="318" r="14" fill="#f6a944" stroke="#a0601c" stroke-width="3"/>
+          <rect x="91" y="326" width="8" height="22" rx="4" fill="#f6a944" stroke="#a0601c" stroke-width="2"/>
+        </g>
+        <!-- head -->
+        <g id="head" class="mv" style="transform-origin:154px 190px">
+          <rect x="54" y="88" width="30" height="60" rx="14" fill="#f6a944" stroke="#a0601c" stroke-width="3"/>
+          <rect x="224" y="88" width="30" height="60" rx="14" fill="#f6a944" stroke="#a0601c" stroke-width="3"/>
+          <rect x="70" y="40" width="168" height="150" rx="60" fill="#3fcf6a" stroke="#1f7a3a" stroke-width="3"/>
+          <path d="M70 100q0-62 84-62t84 62q-84-26-168 0z" fill="#f6a944" stroke="#a0601c" stroke-width="3"/>
+          <circle cx="118" cy="122" r="30" fill="#fff" stroke="#1f7a3a" stroke-width="3"/>
+          <circle cx="190" cy="122" r="30" fill="#fff" stroke="#1f7a3a" stroke-width="3"/>
+          <g id="pupils" class="mv">
+            <circle cx="118" cy="122" r="19" fill="#5b2fa8"/><circle cx="190" cy="122" r="19" fill="#5b2fa8"/>
+            <circle cx="118" cy="122" r="9" fill="#14081f"/><circle cx="190" cy="122" r="9" fill="#14081f"/>
+            <circle cx="111" cy="114" r="5" fill="#fff"/><circle cx="183" cy="114" r="5" fill="#fff"/>
+          </g>
+          <path d="M132 168q22 12 44 0" fill="none" stroke="#1f7a3a" stroke-width="4" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+
+<div id="pageIn">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="flick"></div>
+  <svg class="vrobot" id="vrobot" viewBox="0 0 360 460" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3a46"/><stop offset="1" stop-color="#0e0e13"/></linearGradient>
+      <radialGradient id="core"><stop offset="0" stop-color="#fff2c0"/><stop offset=".35" stop-color="#ff3b2e"/><stop offset="1" stop-color="#5a0000"/></radialGradient>
+    </defs>
+    <g class="breath">
+      <!-- spiked shoulders -->
+      <g fill="url(#mg)" stroke="#55556a" stroke-width="2">
+        <polygon points="30,276 62,236 108,262 100,308 44,306"/><polygon points="330,276 298,236 252,262 260,308 316,306"/>
+      </g>
+      <g fill="#2a0a0e" stroke="#ff2b2b" stroke-width="2">
+        <polygon points="40,244 28,190 70,232"/><polygon points="62,236 66,176 92,246"/>
+        <polygon points="320,244 332,190 290,232"/><polygon points="298,236 294,176 268,246"/>
+      </g>
+      <!-- arms + claws -->
+      <g fill="url(#mg)" stroke="#55556a" stroke-width="2">
+        <rect x="36" y="304" width="40" height="96" rx="12"/><rect x="284" y="304" width="40" height="96" rx="12"/>
+      </g>
+      <g fill="#1a1a22" stroke="#ff2b2b" stroke-width="2">
+        <polygon points="36,400 44,438 54,404"/><polygon points="54,404 60,444 68,404"/><polygon points="68,404 78,436 76,400"/>
+        <polygon points="324,400 316,438 306,404"/><polygon points="306,404 300,444 292,404"/><polygon points="292,404 282,436 284,400"/>
+      </g>
+      <!-- torso -->
+      <path d="M96 268 L264 268 L282 372 L232 436 L128 436 L78 372 Z" fill="url(#mg)" stroke="#55556a" stroke-width="2"/>
+      <g stroke="#08080b" stroke-width="3" fill="none"><path d="M110 380h140M120 400h120M132 420h96"/><path d="M96 300l40 40M264 300l-40 40"/></g>
+      <circle cx="180" cy="334" r="34" fill="#0a0a0e" stroke="#ff2b2b" stroke-width="2" stroke-dasharray="6 5"/>
+      <circle cx="180" cy="334" r="22" fill="url(#core)"/>
+      <polygon points="180,322 191,343 169,343" fill="none" stroke="#2a0000" stroke-width="2.500"/>
+      <rect x="152" y="252" width="56" height="30" fill="#15151b" stroke="#55556a" stroke-width="2"/>
+      <path d="M160 256v22M172 256v22M184 256v22M196 256v22" stroke="#000" stroke-width="3"/>
+      <!-- head -->
+      <g id="vhead" class="mv" style="transform-origin:180px 270px">
+        <g fill="#1c1c24" stroke="#ff2b2b" stroke-width="2"><polygon points="118,96 92,24 152,88"/><polygon points="242,96 268,24 208,88"/><polygon points="168,94 180,40 192,94"/></g>
+        <polygon points="112,92 248,92 282,150 272,226 226,266 134,266 88,226 78,150" fill="url(#mg)" stroke="#6a6a80" stroke-width="2.500"/>
+        <polygon points="96,136 264,136 254,190 106,190" fill="#06060a" stroke="#ff2b2b" stroke-width="1.500"/>
+        <path d="M205 98l22 44M232 168l-14 18" stroke="#6a6a80" stroke-width="2" fill="none"/>
+        <rect x="140" y="218" width="80" height="34" rx="4" fill="#07070a" stroke="#55556a" stroke-width="2"/>
+        <path d="M152 222v26M164 222v26M176 222v26M188 222v26M200 222v26M212 222v26" stroke="#ff2b2b" stroke-width="2.500" opacity=".75"/>
+      </g>
+    </g>
+    <rect class="dim" x="-20" y="-20" width="400" height="500" fill="#04040a"/>
+    <g class="breath"><g class="eyesfx"><g id="veyes" class="mv" style="transform-origin:180px 270px">
+      <polygon points="114,146 170,164 168,180 120,168" fill="#ff2b2b"/><polygon points="246,146 190,164 192,180 240,168" fill="#ff2b2b"/>
+      <polygon points="126,156 164,168 163,174 130,166" fill="#ffd0c4"/><polygon points="234,156 196,168 197,174 230,166" fill="#ffd0c4"/>
+    </g></g></g>
+  </svg>
+  <div class="glass">
+    <div id="inForm">
+      <div class="mark">FII</div>
+      <h2 class="neon">Welcome back</h2>
+      <p class="sub">Sign in to continue to your account.</p>
+      <form id="formIn" novalidate>
+        <div class="fl" id="iEmail"><input id="inEmail" type="email" placeholder=" " autocomplete="email"><label for="inEmail">Email address</label></div>
+        <div class="fl" id="iPass"><input id="inPass" type="password" placeholder=" " autocomplete="current-password"><label for="inPass">Password</label>
+          <button type="button" class="eye" id="eyeIn">Show</button></div>
+        <div class="opts"><label><input type="checkbox" id="remember" checked> Remember me</label><a id="forgot">Forgot password?</a></div>
+        <div class="err" id="errIn" role="alert"></div>
+        <button class="gbtn" type="submit">Sign in</button>
+      </form>
+      <div class="or">or</div>
+      <button class="gg" type="button" id="gIn">
+        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.700 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.500-1 7.300-2.700l-3.500-2.700c-1 .7-2.200 1-3.800 1-2.900 0-5.400-2-6.300-4.600H2.100v2.800A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.700 14c-.2-.7-.4-1.300-.4-2s.1-1.400.4-2V7.200H2.100a11 11 0 0 0 0 9.600L5.700 14z"/><path fill="#EA4335" d="M12 5.400c1.600 0 3.100.6 4.200 1.700l3.100-3.100A11 11 0 0 0 2.100 7.200L5.700 10c.9-2.600 3.400-4.600 6.300-4.600z"/></svg>
+        Continue with Google</button>
+      <div class="foot">New here?<a id="toUp">Create an account</a></div>
+    </div>
+    <div class="wl" id="inWelcome" hidden>
+      <div class="mark" style="margin:0 auto 18px">FII</div>
+      <h2>Signed in</h2>
+      <p>Logged in as <b id="whoIn"></b></p>
+      <button class="gbtn" type="button" id="logoutIn">Log out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var card=$('card'),head=$('head'),pupils=$('pupils'),armL=$('armL'),armR=$('armR');
+  var idle=true,t=0;
+  function clamp(v){return Math.max(-1,Math.min(1,v))}
+  function apply(nx,ny){
+    card.style.transform='rotateY('+(nx*9)+'deg) rotateX('+(-ny*7)+'deg) rotateZ('+(nx*-1.2)+'deg)';
+    head.style.transform='rotate('+(nx*9)+'deg) translate('+(nx*6)+'px,'+(ny*4)+'px)';
+    pupils.style.transform='translate('+(nx*9)+'px,'+(ny*7)+'px)';
+    var up=nx>-0.15&&ny<0.6;
+    armL.style.transform='rotate('+(up?138:6)+'deg)';
+    armR.style.transform='rotate('+(nx*-4)+'deg)';
+    var vt='rotate('+(nx*8)+'deg) translate('+(nx*7)+'px,'+(ny*4)+'px)';
+    $('vhead').style.transform=vt;
+    $('veyes').style.transform='rotate('+(nx*8)+'deg) translate('+(nx*7+nx*5)+'px,'+(ny*4+ny*3)+'px)';
+  }
+  window.addEventListener('pointermove',function(e){idle=false;apply(clamp((e.clientX/innerWidth-.5)*2),clamp((e.clientY/innerHeight-.5)*2))});
+  window.addEventListener('pointerleave',function(){idle=true});
+  setInterval(function(){if(!idle)return;t+=.045;apply(Math.sin(t)*.7,Math.cos(t*.8)*.35)},60);
+
+  // ---- storage (browser-only demo) ----
+  var mem={};
+  function ls(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return mem[k]||null}}
+  function ss(k){try{return JSON.parse(sessionStorage.getItem(k))}catch(e){return null}}
+  function put(st,k,v){try{window[st].setItem(k,JSON.stringify(v))}catch(e){mem[k]=v}}
+  function del(k){try{localStorage.removeItem(k);sessionStorage.removeItem(k)}catch(e){delete mem[k]}}
+  function hash(str){
+    if(!window.crypto||!crypto.subtle)return Promise.resolve(btoa(unescape(encodeURIComponent(str))));
+    return crypto.subtle.digest('SHA-256',new TextEncoder().encode(str)).then(function(b){
+      return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')});
+  }
+  var EMAIL=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  function session(){return ls('fii_session')||ss('fii_session')}
+
+  // ---- routing ----
+  function route(){
+    var inMode=location.hash==='#signin';
+    document.body.classList.toggle('in',inMode);
+    document.title=inMode?'Sign in':'Sign up';
+    show();
+  }
+  function go(h){location.hash=h}
+  window.addEventListener('hashchange',route);
+  function show(){
+    var u=session();
+    $('authView').hidden=!!u;$('welcomeView').hidden=!u;if(u)$('who').textContent=u;
+    $('inForm').hidden=!!u;$('inWelcome').hidden=!u;if(u)$('whoIn').textContent=u;
+  }
+  function logout(){del('fii_session');go('signin');show()}
+  $('logout').addEventListener('click',logout);
+  $('logoutIn').addEventListener('click',logout);
+
+  // ---- sign up page ----
+  var err=$('err'),email=$('email'),pass=$('pass');
+  function msg(t,ok){err.textContent=t||'';err.className='err'+(ok?' ok':'')}
+  $('swLink').addEventListener('click',function(){go('signin')});
+  $('swLink').addEventListener('keydown',function(e){if(e.key==='Enter')go('signin')});
+  $('eye').addEventListener('click',function(){var h=pass.type==='password';pass.type=h?'text':'password';this.textContent=h?'Hide':'Show'});
+  $('gBtn').addEventListener('click',function(){msg('Google login needs a backend. Use email for now.')});
+  $('form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var em=email.value.trim().toLowerCase(),pw=pass.value;
+    email.parentNode.classList.remove('bad');pass.parentNode.classList.remove('bad');
+    if(!EMAIL.test(em)){email.parentNode.classList.add('bad');return msg('Enter a valid email address.')}
+    if(pw.length<6){pass.parentNode.classList.add('bad');return msg('Password must be at least 6 characters.')}
+    var users=ls('fii_users')||{};
+    hash(pw).then(function(h){
+      if(users[em])return msg('This email is already registered. Please sign in.');
+      users[em]=h;put('localStorage','fii_users',users);put('localStorage','fii_session',em);
+      msg('Account created!',true);setTimeout(function(){pass.value='';show()},500);
+    });
+  });
+
+  // ---- sign in page ----
+  var errIn=$('errIn'),iE=$('inEmail'),iP=$('inPass');
+  function msgIn(t,ok){errIn.textContent=t||'';errIn.className='err'+(ok?' ok':'')}
+  $('toUp').addEventListener('click',function(){go('signup')});
+  $('eyeIn').addEventListener('click',function(){var h=iP.type==='password';iP.type=h?'text':'password';this.textContent=h?'Hide':'Show'});
+  $('gIn').addEventListener('click',function(){msgIn('Google login needs a backend. Use email for now.')});
+  $('forgot').addEventListener('click',function(){
+    var em=iE.value.trim().toLowerCase();
+    if(!EMAIL.test(em))return msgIn('Type your email above first.');
+    msgIn('If this email is registered, a reset link has been sent (demo).',true);
+  });
+  $('formIn').addEventListener('submit',function(e){
+    e.preventDefault();
+    var em=iE.value.trim().toLowerCase(),pw=iP.value;
+    $('iEmail').classList.remove('bad');$('iPass').classList.remove('bad');
+    if(!EMAIL.test(em)){$('iEmail').classList.add('bad');return msgIn('Enter a valid email address.')}
+    if(!pw){$('iPass').classList.add('bad');return msgIn('Enter your password.')}
+    var users=ls('fii_users')||{};
+    hash(pw).then(function(h){
+      if(!users[em])return msgIn('No account found. Create one first.');
+      if(users[em]!==h){$('iPass').classList.add('bad');return msgIn('Wrong password.')}
+      put($('remember').checked?'localStorage':'sessionStorage','fii_session',em);
+      msgIn('Signed in!',true);setTimeout(function(){iP.value='';show()},400);
+    });
+  });
+
+  route();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+backend/.env
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Python environments and cache
+.venv/
+.venv_old/
+venv/
+__pycache__/
+*.py[cod]
+
+# Node.js and Vite
+node_modules/
+dist/
+.vite/
+
+# Local databases and uploads
+*.sqlite3
+backend/media/
+uploads/
+uploaded_videos/
+tmp/
+temp/
+
+# Logs and test cache
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Credentials
+credentials.json
+client_secret*.json
+*service-account*.json
+
+# Large video files
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+
+# OS files
+Thumbs.db
+.DS_Store
